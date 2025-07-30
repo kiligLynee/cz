@@ -1,0 +1,2032 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>浙商银行 - RWA数字资产平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* 浙商银行品牌色 - 红色系 */
+            --czb-primary: #E60012;
+            --czb-primary-dark: #C50010;
+            --czb-primary-light: #FFE5E5;
+            --czb-primary-lighter: #FFF5F5;
+            --czb-secondary: #333333;
+            --czb-gold: #D4A574;
+            --czb-success: #52C41A;
+            --czb-warning: #FA8C16;
+            --czb-info: #1890FF;
+            --czb-gray-1: #FAFAFA;
+            --czb-gray-2: #F5F5F5;
+            --czb-gray-3: #E8E8E8;
+            --czb-gray-4: #D9D9D9;
+            --czb-gray-5: #BFBFBF;
+            --czb-gray-6: #8C8C8C;
+            --czb-gray-7: #595959;
+            --czb-gray-8: #262626;
+            --czb-text-primary: #333333;
+            --czb-text-secondary: #666666;
+            --czb-text-light: #999999;
+            --czb-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --czb-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #FFFFFF;
+            color: var(--czb-text-primary);
+            line-height: 1.6;
+        }
+
+        /* 懒加载占位符 */
+        .lazy-load {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .lazy-load.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-top {
+            background: var(--czb-gray-2);
+            border-bottom: 1px solid var(--czb-gray-3);
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled .header-top {
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            color: var(--czb-text-secondary);
+        }
+
+        .nav {
+            background: transparent;
+            padding: 0;
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled .nav-content {
+            height: 60px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-shrink: 0;
+        }
+
+        .logo-img {
+            height: 45px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .header.scrolled .logo-img {
+            height: 35px;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            color: var(--czb-text-primary);
+        }
+
+        .logo-subtitle {
+            font-size: 0.9rem;
+            color: var(--czb-text-secondary);
+            margin-left: 0.5rem;
+            padding-left: 0.5rem;
+            border-left: 1px solid var(--czb-gray-4);
+            white-space: nowrap;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu li {
+            position: relative;
+        }
+
+        .nav-menu a {
+            color: var(--czb-text-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            background: var(--czb-gray-2);
+            white-space: nowrap;
+            display: block;
+        }
+
+        .nav-menu a:hover {
+            background: var(--czb-primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(230, 0, 18, 0.3);
+        }
+
+        .nav-menu a.active {
+            background: var(--czb-primary);
+            color: white;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .nav-button {
+            padding: 0.6rem 1.2rem;
+            background: white;
+            color: var(--czb-text-primary);
+            border: 1px solid var(--czb-gray-4);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .nav-button:hover {
+            background: var(--czb-gray-2);
+            border-color: var(--czb-primary);
+            color: var(--czb-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--czb-shadow);
+        }
+
+        .phone-number {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--czb-text-primary);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-left: 1rem;
+        }
+
+        .phone-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--czb-gray-2);
+            color: var(--czb-text-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.125rem;
+            border: 1px solid var(--czb-gray-4);
+            transition: all 0.3s ease;
+        }
+
+        .phone-number:hover .phone-icon {
+            background: var(--czb-primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* 主要内容区 */
+        .main-container {
+            margin-top: 130px;
+            min-height: calc(100vh - 130px);
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            background: linear-gradient(135deg, #FFFFFF 0%, #FAFAFA 100%);
+            color: var(--czb-text-primary);
+            padding: 4rem 0 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: -60%;
+            right: -30%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(230, 0, 18, 0.03) 0%, transparent 60%);
+            animation: float-slow 40s ease-in-out infinite;
+        }
+
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-50px) rotate(180deg); }
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            color: var(--czb-text-primary);
+            text-align: center;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--czb-text-secondary);
+            margin-bottom: 3rem;
+            font-weight: 400;
+            text-align: center;
+        }
+
+        .hero-features {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .hero-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            border: 1px solid var(--czb-gray-3);
+            transition: all 0.3s ease;
+            box-shadow: var(--czb-shadow);
+        }
+
+        .hero-feature:hover {
+            background: var(--czb-primary-lighter);
+            border-color: var(--czb-primary-light);
+            transform: translateY(-3px);
+            box-shadow: var(--czb-shadow-hover);
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--czb-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .hero-feature:hover .feature-icon {
+            transform: scale(1.1);
+        }
+
+        /* 分割线装饰 */
+        .section-divider {
+            height: 4px;
+            background: linear-gradient(90deg, var(--czb-gray-3) 0%, var(--czb-primary-light) 50%, var(--czb-gray-3) 100%);
+            margin: 0 auto 2rem;
+            border-radius: 2px;
+            width: 60px;
+        }
+
+        /* 概览数据区 */
+        .overview-section {
+            padding: 4rem 0;
+            background: white;
+        }
+
+        .section-header {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--czb-text-primary);
+            margin-bottom: 1rem;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .section-subtitle {
+            color: var(--czb-text-secondary);
+            font-size: 1.125rem;
+            margin-top: 1rem;
+        }
+
+        .overview-stats {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid var(--czb-gray-3);
+            border-radius: 12px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--czb-primary), var(--czb-gold));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--czb-shadow-hover);
+            border-color: var(--czb-primary-light);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--czb-primary-lighter);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.5rem;
+            color: var(--czb-primary);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover .stat-icon {
+            background: var(--czb-primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--czb-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--czb-text-secondary);
+        }
+
+        /* 资产板块分类 */
+        .asset-categories-section {
+            padding: 4rem 0;
+            background: var(--czb-gray-1);
+        }
+
+        .categories-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid var(--czb-gray-3);
+        }
+
+        .category-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--czb-shadow-hover);
+            border-color: var(--czb-primary-light);
+        }
+
+        .category-header {
+            padding: 2rem 2rem 1rem;
+            text-align: center;
+        }
+
+        .category-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--czb-primary-lighter);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: var(--czb-primary);
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover .category-icon {
+            background: var(--czb-primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .category-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--czb-text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .category-desc {
+            color: var(--czb-text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .category-stats {
+            padding: 1.5rem 2rem;
+            background: var(--czb-gray-1);
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .category-stat {
+            text-align: center;
+        }
+
+        .category-stat-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--czb-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .category-stat-label {
+            font-size: 0.8rem;
+            color: var(--czb-text-secondary);
+        }
+
+        /* Token信息区 */
+        .token-section {
+            padding: 4rem 0;
+            background: white;
+        }
+
+        .token-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .token-card {
+            background: white;
+            border: 1px solid var(--czb-gray-3);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .token-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--czb-shadow-hover);
+            border-color: var(--czb-primary-light);
+        }
+
+        .token-status {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .token-status.active {
+            background: var(--czb-success);
+            color: white;
+        }
+
+        .token-status.pending {
+            background: var(--czb-warning);
+            color: white;
+        }
+
+        .token-status.inactive {
+            background: var(--czb-gray-5);
+            color: white;
+        }
+
+        .token-symbol {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--czb-primary), var(--czb-gold));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+        }
+
+        .token-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--czb-text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .token-desc {
+            color: var(--czb-text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .token-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--czb-gray-3);
+        }
+
+        .token-info-item {
+            text-align: center;
+        }
+
+        .token-info-label {
+            font-size: 0.75rem;
+            color: var(--czb-text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .token-info-value {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--czb-primary);
+        }
+
+        /* 投资渠道介绍 */
+        .investment-channels-section {
+            padding: 4rem 0;
+            background: var(--czb-gray-1);
+        }
+
+        .channels-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .channel-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid var(--czb-gray-3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .channel-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--czb-primary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .channel-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .channel-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--czb-shadow-hover);
+            border-color: var(--czb-primary-light);
+        }
+
+        .channel-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--czb-primary-lighter);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: var(--czb-primary);
+            transition: all 0.3s ease;
+        }
+
+        .channel-card:hover .channel-icon {
+            background: var(--czb-primary);
+            color: white;
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .channel-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--czb-text-primary);
+        }
+
+        .channel-desc {
+            color: var(--czb-text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .channel-features {
+            list-style: none;
+            text-align: left;
+        }
+
+        .channel-features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--czb-gray-3);
+            color: var(--czb-text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .channel-features li:last-child {
+            border-bottom: none;
+        }
+
+        .channel-features li::before {
+            content: '✓';
+            color: var(--czb-success);
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        /* 平台功能展望 */
+        .future-features-section {
+            padding: 4rem 0;
+            background: linear-gradient(135deg, var(--czb-primary) 0%, var(--czb-primary-dark) 100%);
+            color: white;
+        }
+
+        .future-features-section .section-title,
+        .future-features-section .section-subtitle {
+            color: white;
+        }
+
+        .features-timeline {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            flex: 1;
+            max-width: 45%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-right: auto;
+            margin-left: 2rem;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-left: auto;
+            margin-right: 2rem;
+        }
+
+        .timeline-icon {
+            width: 60px;
+            height: 60px;
+            background: white;
+            color: var(--czb-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .timeline-phase {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-desc {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+        }
+
+        /* 快速入口 */
+        .quick-links {
+            background: var(--czb-gray-2);
+            padding: 3rem 0;
+        }
+
+        .quick-links-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .quick-link-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid var(--czb-gray-3);
+        }
+
+        .quick-link-card:hover {
+            border-color: var(--czb-primary);
+            box-shadow: var(--czb-shadow-hover);
+            transform: translateY(-4px);
+        }
+
+        .quick-link-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--czb-primary-lighter);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: var(--czb-primary);
+            transition: all 0.3s ease;
+        }
+
+        .quick-link-card:hover .quick-link-icon {
+            background: var(--czb-primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .quick-link-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--czb-text-primary);
+        }
+
+        /* 底部CTA */
+        .cta-section {
+            background: linear-gradient(135deg, var(--czb-primary) 0%, var(--czb-primary-dark) 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            animation: drift 60s linear infinite;
+        }
+
+        @keyframes drift {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(-50px) translateY(-50px); }
+        }
+
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .cta-desc {
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--czb-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--czb-primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(230, 0, 18, 0.3);
+        }
+
+        .btn-white {
+            background: white;
+            color: var(--czb-primary);
+        }
+
+        .btn-white:hover {
+            background: var(--czb-gray-1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-outline:hover {
+            background: white;
+            color: var(--czb-primary);
+            transform: translateY(-3px);
+        }
+
+        /* 底部 */
+        .footer {
+            background: var(--czb-gray-8);
+            color: white;
+            padding: 3rem 0 2rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            line-height: 1.8;
+        }
+
+        .footer-section a:hover {
+            color: var(--czb-primary-light);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--czb-gray-6);
+            padding-top: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .nav-menu {
+                gap: 1rem;
+            }
+            
+            .nav-menu a {
+                font-size: 0.8rem;
+                padding: 0.6rem 0.8rem;
+            }
+            
+            .nav-button {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.75rem;
+            }
+
+            .timeline-line {
+                display: none;
+            }
+
+            .timeline-item {
+                flex-direction: column !important;
+            }
+
+            .timeline-content {
+                max-width: 100%;
+                margin: 1rem 0 !important;
+            }
+
+            .timeline-icon {
+                position: relative;
+                left: auto;
+                transform: none;
+                margin: 1rem 0;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .nav-content {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 1rem 2rem;
+            }
+            
+            .nav-menu {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid var(--czb-gray-3);
+            }
+            
+            .nav-actions {
+                order: 2;
+            }
+            
+            .phone-number {
+                display: none;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                font-size: 0.75rem;
+                padding: 0.5rem 1rem;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .logo-img {
+                height: 35px;
+            }
+            
+            .logo-subtitle {
+                font-size: 0.875rem;
+            }
+            
+            .nav-button {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.75rem;
+                min-width: auto;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.125rem;
+            }
+
+            .hero-features {
+                gap: 1rem;
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .hero-feature {
+                padding: 0.75rem 1.5rem;
+                font-size: 0.875rem;
+                width: 100%;
+                max-width: 280px;
+            }
+
+            .overview-stats,
+            .categories-grid,
+            .token-grid,
+            .channels-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .cta-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-actions {
+                gap: 0.5rem;
+            }
+            
+            .nav-button {
+                padding: 0.5rem;
+                font-size: 0.7rem;
+            }
+            
+            .stat-card,
+            .category-card,
+            .token-card,
+            .channel-card {
+                margin: 0;
+            }
+        }
+
+        /* 滚动指示器 */
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: var(--czb-primary);
+            z-index: 9999;
+            transition: width 0.1s ease;
+        }
+
+        /* 返回顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--czb-primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: var(--czb-primary-dark);
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+    <!-- 滚动进度指示器 -->
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+
+    <!-- 顶部导航 -->
+    <header class="header" id="header">
+        <div class="header-top">
+            <div class="header-content">
+                <span>客户跨境支付新体验 | 营业网点 | English</span>
+                <span id="currentDate">2025年7月28日 星期一</span>
+            </div>
+        </div>
+        
+        <!-- 主导航 -->
+        <nav class="nav">
+            <div class="nav-content">
+                <div class="logo">
+                    <svg class="logo-img" viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg">
+                        <!-- CZBANK 文字 -->
+                        <text x="0" y="30" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#333333">CZBANK</text>
+                    </svg>
+                    <span class="logo-subtitle">RWA数字资产平台</span>
+                </div>
+                
+                <ul class="nav-menu">
+                    <li><a class="active" href="#home">首页</a></li>
+                    <li><a href="#overview">数据概览</a></li>
+                    <li><a href="#categories">资产板块</a></li>
+                    <li><a href="#tokens">Token信息</a></li>
+                    <li><a href="#channels">投资渠道</a></li>
+                    <li><a href="#future">功能展望</a></li>
+                </ul>
+                
+                <div class="nav-actions">
+                    <button class="nav-button">网点查询</button>
+                    <button class="nav-button">投资与咨询</button>
+                    <button class="nav-button">投诉处理流程</button>
+                    <div class="phone-number">
+                        <div class="phone-icon">📞</div>
+                        <span>95527</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="main-container">
+        <!-- Hero Banner -->
+        <section class="hero-banner" id="home">
+            <div class="hero-content">
+                <h1 class="hero-title lazy-load">浙商银行RWA数字资产平台</h1>
+                <p class="hero-subtitle lazy-load">链接实体经济与数字金融 · 赋能浙江企业创新发展</p>
+                
+                <div class="hero-features lazy-load">
+                    <div class="hero-feature">
+                        <div class="feature-icon">🔐</div>
+                        <span>区块链确权</span>
+                    </div>
+                    <div class="hero-feature">
+                        <div class="feature-icon">📊</div>
+                        <span>智能合约</span>
+                    </div>
+                    <div class="hero-feature">
+                        <div class="feature-icon">💎</div>
+                        <span>资产透明</span>
+                    </div>
+                    <div class="hero-feature">
+                        <div class="feature-icon">🚀</div>
+                        <span>高效流转</span>
+                    </div>
+                    <div class="hero-feature">
+                        <div class="feature-icon">✅</div>
+                        <span>合规保障</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 📊 概览数据 -->
+        <section class="overview-section" id="overview">
+            <div class="section-header">
+                <h2 class="section-title lazy-load">📊 平台数据概览</h2>
+                <div class="section-divider"></div>
+                <p class="section-subtitle lazy-load">实时展示平台核心运营数据与投资表现</p>
+            </div>
+            
+            <div class="overview-stats">
+                <div class="stat-card lazy-load">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-number">2,847.3<span style="font-size: 1.5rem;">亿</span></div>
+                    <div class="stat-label">平台总资产规模</div>
+                </div>
+                <div class="stat-card lazy-load">
+                    <div class="stat-icon">🪙</div>
+                    <div class="stat-number">73.2<span style="font-size: 1.5rem;">%</span></div>
+                    <div class="stat-label">资产Token化比例</div>
+                </div>
+                <div class="stat-card lazy-load">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-number">8,569<span style="font-size: 1.5rem;">人</span></div>
+                    <div class="stat-label">活跃投资人数量</div>
+                </div>
+                <div class="stat-card lazy-load">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-number">7.35<span style="font-size: 1.5rem;">%</span></div>
+                    <div class="stat-label">平均年化收益率</div>
+                </div>
+                <div class="stat-card lazy-load">
+                    <div class="stat-icon">🏢</div>
+                    <div class="stat-number">1,247<span style="font-size: 1.5rem;">家</span></div>
+                    <div class="stat-label">合作优质企业</div>
+                </div>
+                <div class="stat-card lazy-load">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-number">24<span style="font-size: 1.5rem;">小时</span></div>
+                    <div class="stat-label">平均交易确认时间</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🏗️ 资产板块分类 -->
+        <section class="asset-categories-section" id="categories">
+            <div class="section-header">
+                <h2 class="section-title lazy-load">🏗️ 资产板块分类</h2>
+                <div class="section-divider"></div>
+                <p class="section-subtitle lazy-load">基于浙江产业优势，构建多元化RWA资产组合</p>
+            </div>
+            
+            <div class="categories-grid">
+                <div class="category-card lazy-load">
+                    <div class="category-header">
+                        <div class="category-icon">🔌</div>
+                        <h3 class="category-name">新能源充电桩</h3>
+                        <p class="category-desc">分布式充电桩网络，覆盖浙江省内主要城市，稳定现金流回报</p>
+                    </div>
+                    <div class="category-stats">
+                        <div class="category-stat">
+                            <div class="category-stat-value">485.2亿</div>
+                            <div class="category-stat-label">板块总值</div>
+                        </div>
+                        <div class="category-stat">
+                            <div class="category-stat-value">6.8%</div>
+                            <div class="category-stat-label">平均收益</div>
+                        </div>
+                        <div class="category-stat">
+                            <div class="category-stat-value">3,247个</div>
+                            <div class="category-stat-label">充电桩数量</div>
+                        </div>
+                        <div class="category-stat">
+                            <div class="category-stat-value">92.4%</div>
+                            <div class="category-stat-label">运营率</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="category-card lazy-load">
+                    <div class="category-header">
+                        <div class="category-icon">📄</div>
+                        <h3 class="category-name">企业应收账款</h3>
+                        <p class="category-desc">优质上市公司应收账款，银行保理业务支撑，风险可控</p>
+                    </div>
+                    <div class="category-stats">
+                        <div class="category-stat">
+                            <div class="category-stat-value">1,236.8亿</div>
+                            <div class="category-stat-label">板块总值</div>
+                        </div>
+                        <div class="category-stat">
+                            <div class="category-stat-value">5.2%</div>
+                            <div class="category-stat-label">平均收益</div>
+                        </div>
+                        <div class="category-stat">
+                            <div class="category-stat-value">856家</div>
+                            <div class="category-stat-label">合作企业</div>
+                        </div>
+                        <div class="category-stat">
+                            <div class="category-stat-value">99.1%</div>
+                            <div class="category-stat-label">回款率</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="category-card lazy-load">
+                    <div class="category-header">
+                        <div class="category-icon">🏠</div>
+                        <h3 class="category-name">商业地产REITs</h3>
+                        <p class="category-desc">长三角核心商圈商业地产，租金收益稳定，增值潜力巨大</p>
+                    </div>
+                    <div class="category-stats">
+                        <div class="category-stat">
+                            <div class="category-stat-value">1,125.3亿</div>
+                            <div class="category-stat-label">板块总值</div>
+                        </div>
+                        <div class="category-stat">
+                            <div class="category-stat-value">8.1%</div>
+                            <div class="category-stat-label">平均收益</div>
+                        </div>
+                        <div class="category-stat">
+                            <div class="category-stat-value">127个</div>
+                            <div class="category-stat-label">项目数量</div>
+                        </div>
+                        <div class="category-stat">
+                            <div class="category-stat-value">96.7%</div>
+                            <div class="category-stat-label">出租率</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🪙 Token信息 -->
+        <section class="token-section" id="tokens">
+            <div class="section-header">
+                <h2 class="section-title lazy-load">🪙 Token资产信息</h2>
+                <div class="section-divider"></div>
+                <p class="section-subtitle lazy-load">基于区块链技术的数字化资产凭证，透明可追溯</p>
+            </div>
+            
+            <div class="token-grid">
+                <div class="token-card lazy-load">
+                    <div class="token-status active">交易中</div>
+                    <div class="token-symbol">CZE</div>
+                    <h3 class="token-name">充电桩收益Token</h3>
+                    <p class="token-desc">代表充电桩网络的收益权份额，按月分配充电服务费收入</p>
+                    <div class="token-info">
+                        <div class="token-info-item">
+                            <div class="token-info-label">当前价格</div>
+                            <div class="token-info-value">¥10.35</div>
+                        </div>
+                        <div class="token-info-item">
+                            <div class="token-info-label">流通数量</div>
+                            <div class="token-info-value">468.5万</div>
+                        </div>
+                        <div class="token-info-item">
+                            <div class="token-info-label">月度收益</div>
+                            <div class="token-info-value">0.57%</div>
+                        </div>
+                        <div class="token-info-item">
+                            <div class="token-info-label">持有人数</div>
+                            <div class="token-info-value">2,347</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="token-card lazy-load">
+                    <div class="token-status active">交易中</div>
+                    <div class="token-symbol">CZR</div>
+                    <h3 class="token-name">应收账款Token</h3>
+                    <p class="token-desc">企业应收账款的数字化凭证，到期自动清算返还本金及收益</p>
+                    <div class="token-info">
+                        <div class="token-info-item">
+                            <div class="token-info-label">当前价格</div>
+                            <div class="token-info-value">¥5.22</div>
+                        </div>
+                        <div class="token-info-item">
+                            <div class="token-info-label">流通数量</div>
+                            <div class="token-info-value">2.37亿</div>
+                        </div>
+                        <div class="token-info-item">
+                            <div class="token-info-label">平均期限</div>
+                            <div class="token-info-value">126天</div>
+                        </div>
+                        <div class="token-info-item">
+                            <div class="token-info-label">持有人数</div>
+                            <div class="token-info-value">5,689</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="token-card lazy-load">
+                    <div class="token-status pending">即将上线</div>
+                    <div class="token-symbol">CZP</div>
+                    <h3 class="token-name">商业地产REITs Token</h3>
+                    <p class="token-desc">商业地产租金收益权的通证化表现，享受物业增值和租金双重收益</p>
+                    <div class="token-info">
+                        <div class="token-info-item">
+                            <div class="token-info-label">预期价格</div>
+                            <div class="token-info-value">¥25.80</div>
+                        </div>
+                        <div class="token-info-item">
+                            <div class="token-info-label">发行数量</div>
+                            <div class="token-info-value">4.36亿</div>
+                        </div>
+                        <div class="token-info-item">
+                            <div class="token-info-label">预期收益</div>
+                            <div class="token-info-value">8.1%</div>
+                        </div>
+                        <div class="token-info-item">
+                            <div class="token-info-label">上线时间</div>
+                            <div class="token-info-value">8月15日</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="token-card lazy-load">
+                    <div class="token-status inactive">研发中</div>
+                    <div class="token-symbol">CZS</div>
+                    <h3 class="token-name">供应链金融Token</h3>
+                    <p class="token-desc">基于核心企业信用的供应链应付账款数字化，创新金融服务模式</p>
+                    <div class="token-info">
+                        <div class="token-info-item">
+                            <div class="token-info-label">预期价格</div>
+                            <div class="token-info-value">¥1.00</div>
+                        </div>
+                        <div class="token-info-item">
+                            <div class="token-info-label">计划发行</div>
+                            <div class="token-info-value">10亿</div>
+                        </div>
+                        <div class="token-info-item">
+                            <div class="token-info-label">预期收益</div>
+                            <div class="token-info-value">4.5%</div>
+                        </div>
+                        <div class="token-info-item">
+                            <div class="token-info-label">上线时间</div>
+                            <div class="token-info-value">Q4 2025</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 👥 投资渠道介绍 -->
+        <section class="investment-channels-section" id="channels">
+            <div class="section-header">
+                <h2 class="section-title lazy-load">👥 多元化投资渠道</h2>
+                <div class="section-divider"></div>
+                <p class="section-subtitle lazy-load">为不同投资者提供多样化的RWA投资服务渠道</p>
+            </div>
+            
+            <div class="channels-grid">
+                <div class="channel-card lazy-load">
+                    <div class="channel-icon">🏢</div>
+                    <h3 class="channel-title">机构投资渠道</h3>
+                    <p class="channel-desc">面向保险公司、基金管理机构、企业财务等机构投资者，提供大额定制化RWA投资方案</p>
+                    <ul class="channel-features">
+                        <li>最低投资额度: 1000万元起</li>
+                        <li>专属客户经理服务</li>
+                        <li>定制化资产配置方案</li>
+                        <li>优先项目准入权</li>
+                        <li>季度投资策略报告</li>
+                    </ul>
+                </div>
+
+                <div class="channel-card lazy-load">
+                    <div class="channel-icon">💎</div>
+                    <h3 class="channel-title">高净值客户渠道</h3>
+                    <p class="channel-desc">为高净值个人客户提供精品RWA投资服务，享受专业投资顾问和优质项目资源</p>
+                    <ul class="channel-features">
+                        <li>最低投资额度: 100万元起</li>
+                        <li>私人银行专属服务</li>
+                        <li>多元化资产组合</li>
+                        <li>风险评估与管理</li>
+                        <li>月度收益分析报告</li>
+                    </ul>
+                </div>
+
+                <div class="channel-card lazy-load">
+                    <div class="channel-icon">👤</div>
+                    <h3 class="channel-title">零售客户渠道</h3>
+                    <p class="channel-desc">通过手机银行、网点等渠道，为普通投资者提供便捷的RWA投资体验</p>
+                    <ul class="channel-features">
+                        <li>最低投资额度: 1万元起</li>
+                        <li>手机银行在线投资</li>
+                        <li>智能投顾建议</li>
+                        <li>7x24小时客服</li>
+                        <li>投资者教育服务</li>
+                    </ul>
+                </div>
+
+                <div class="channel-card lazy-load">
+                    <div class="channel-icon">🌐</div>
+                    <h3 class="channel-title">线上平台渠道</h3>
+                    <p class="channel-desc">基于区块链技术的数字化投资平台，提供透明、高效的RWA交易环境</p>
+                    <ul class="channel-features">
+                        <li>实时交易与结算</li>
+                        <li>区块链技术保障</li>
+                        <li>智能合约自动执行</li>
+                        <li>透明的收益分配</li>
+                        <li>数字资产钱包管理</li>
+                    </ul>
+                </div>
+
+                <div class="channel-card lazy-load">
+                    <div class="channel-icon">🤝</div>
+                    <h3 class="channel-title">合作伙伴渠道</h3>
+                    <p class="channel-desc">与证券公司、基金销售机构等金融合作伙伴共同推广RWA投资产品</p>
+                    <ul class="channel-features">
+                        <li>多渠道产品分销</li>
+                        <li>联合营销推广</li>
+                        <li>专业培训支持</li>
+                        <li>系统对接服务</li>
+                        <li>佣金激励政策</li>
+                    </ul>
+                </div>
+
+                <div class="channel-card lazy-load">
+                    <div class="channel-icon">🎓</div>
+                    <h3 class="channel-title">投资者教育渠道</h3>
+                    <p class="channel-desc">通过多种形式的投资者教育活动，提升公众对RWA投资的认知和理解</p>
+                    <ul class="channel-features">
+                        <li>定期投资讲座与培训</li>
+                        <li>RWA知识普及材料</li>
+                        <li>在线学习平台</li>
+                        <li>投资风险评估工具</li>
+                        <li>专家答疑服务</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🚀 平台功能展望 -->
+        <section class="future-features-section" id="future">
+            <div class="section-header">
+                <h2 class="section-title lazy-load">🚀 平台功能展望</h2>
+                <div class="section-divider"></div>
+                <p class="section-subtitle lazy-load">构建未来金融基础设施，引领数字资产投资新时代</p>
+            </div>
+            
+            <div class="features-timeline">
+                <div class="timeline-line"></div>
+                
+                <div class="timeline-item lazy-load">
+                    <div class="timeline-content">
+                        <div class="timeline-phase">第一阶段 - 2025年Q3</div>
+                        <h3 class="timeline-title">智能投顾系统</h3>
+                        <p class="timeline-desc">基于AI算法的个性化资产配置建议，根据投资者风险偏好和市场行情，自动推荐最优RWA投资组合，实现千人千面的投资服务。</p>
+                    </div>
+                    <div class="timeline-icon">🤖</div>
+                </div>
+
+                <div class="timeline-item lazy-load">
+                    <div class="timeline-content">
+                        <div class="timeline-phase">第二阶段 - 2025年Q4</div>
+                        <h3 class="timeline-title">跨链资产桥接</h3>
+                        <p class="timeline-desc">打通不同区块链网络，实现RWA资产在多链间的无缝转移和交易，提升资产流动性，降低交易成本，扩大投资者覆盖面。</p>
+                    </div>
+                    <div class="timeline-icon">🌉</div>
+                </div>
+
+                <div class="timeline-item lazy-load">
+                    <div class="timeline-content">
+                        <div class="timeline-phase">第三阶段 - 2026年Q1</div>
+                        <h3 class="timeline-title">DeFi协议集成</h3>
+                        <p class="timeline-desc">集成去中心化金融协议，支持RWA资产抵押借贷、流动性挖矿等创新玩法，为投资者提供更多元化的收益机会。</p>
+                    </div>
+                    <div class="timeline-icon">🏦</div>
+                </div>
+
+                <div class="timeline-item lazy-load">
+                    <div class="timeline-content">
+                        <div class="timeline-phase">第四阶段 - 2026年Q2</div>
+                        <h3 class="timeline-title">NFT资产化服务</h3>
+                        <p class="timeline-desc">将实体资产NFT化，支持艺术品、收藏品、知识产权等特殊资产的数字化投资，开拓全新的RWA投资领域。</p>
+                    </div>
+                    <div class="timeline-icon">🎨</div>
+                </div>
+
+                <div class="timeline-item lazy-load">
+                    <div class="timeline-content">
+                        <div class="timeline-phase">第五阶段 - 2026年Q3</div>
+                        <h3 class="timeline-title">全球资产接入</h3>
+                        <p class="timeline-desc">与国际金融机构合作，接入海外优质RWA资产，为中国投资者提供全球化的资产配置选择，实现真正的全球投资。</p>
+                    </div>
+                    <div class="timeline-icon">🌍</div>
+                </div>
+
+                <div class="timeline-item lazy-load">
+                    <div class="timeline-content">
+                        <div class="timeline-phase">远期愿景 - 2027年</div>
+                        <h3 class="timeline-title">元宇宙金融生态</h3>
+                        <p class="timeline-desc">构建基于VR/AR技术的沉浸式金融服务体验，在虚拟世界中进行RWA资产展示、交易和管理，打造全新的数字金融生态系统。</p>
+                    </div>
+                    <div class="timeline-icon">🥽</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 快速入口 -->
+        <section class="quick-links">
+            <div class="section-header">
+                <h2 class="section-title lazy-load" style="color: var(--czb-text-primary);">快速服务入口</h2>
+                <div class="section-divider"></div>
+                <p class="section-subtitle lazy-load" style="color: var(--czb-text-secondary);">一站式数字金融服务，随时随地便捷访问</p>
+            </div>
+            <div class="quick-links-grid">
+                <div class="quick-link-card lazy-load">
+                    <div class="quick-link-icon">🏢</div>
+                    <div class="quick-link-title">个人网上银行登录</div>
+                </div>
+                <div class="quick-link-card lazy-load">
+                    <div class="quick-link-icon">💼</div>
+                    <div class="quick-link-title">企业网上银行登录</div>
+                </div>
+                <div class="quick-link-card lazy-load">
+                    <div class="quick-link-icon">🏪</div>
+                    <div class="quick-link-title">RWA交易平台登录</div>
+                </div>
+                <div class="quick-link-card lazy-load">
+                    <div class="quick-link-icon">💳</div>
+                    <div class="quick-link-title">浙银托管登录</div>
+                </div>
+                <div class="quick-link-card lazy-load">
+                    <div class="quick-link-icon">📱</div>
+                    <div class="quick-link-title">手机银行下载</div>
+                </div>
+                <div class="quick-link-card lazy-load">
+                    <div class="quick-link-icon">🎓</div>
+                    <div class="quick-link-title">投资者教育中心</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 底部CTA -->
+        <section class="cta-section">
+            <div class="cta-content">
+                <h2 class="cta-title lazy-load">开启您的RWA投资之旅</h2>
+                <p class="cta-desc lazy-load">加入浙商银行RWA数字资产平台，体验前沿金融科技带来的投资新机遇</p>
+                <div class="cta-buttons lazy-load">
+                    <button class="btn btn-white">立即注册投资</button>
+                    <button class="btn btn-outline">了解更多详情</button>
+                    <button class="btn btn-outline">预约专业咨询</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>关于浙商银行</h3>
+                <p>浙商银行成立于2004年，是中国12家全国性股份制商业银行之一，致力于为客户提供专业、高效的金融服务。</p>
+                <p>总部地址：杭州市庆春路288号</p>
+                <p>客服热线：95527</p>
+            </div>
+            <div class="footer-section">
+                <h3>RWA服务</h3>
+                <p><a href="#">充电桩投资</a></p>
+                <p><a href="#">应收账款融资</a></p>
+                <p><a href="#">商业地产REITs</a></p>
+                <p><a href="#">供应链金融</a></p>
+            </div>
+            <div class="footer-section">
+                <h3>投资者服务</h3>
+                <p><a href="#">投资指南</a></p>
+                <p><a href="#">风险提示</a></p>
+                <p><a href="#">收益计算器</a></p>
+                <p><a href="#">投诉建议</a></p>
+            </div>
+            <div class="footer-section">
+                <h3>法律声明</h3>
+                <p><a href="#">隐私政策</a></p>
+                <p><a href="#">服务条款</a></p>
+                <p><a href="#">风险揭示书</a></p>
+                <p><a href="#">监管信息</a></p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 浙商银行股份有限公司 版权所有 | 浙ICP备XXXXXXXX号 | 经营许可证编号：XXXXXXXX</p>
+            <p>投资有风险，理财需谨慎 | 本产品由浙商银行发行与管理</p>
+        </div>
+    </footer>
+
+    <!-- 返回顶部按钮 -->
+    <button class="back-to-top" id="backToTop">↑</button>
+
+    <script>
+        // 懒加载功能
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('loaded');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // 观察所有需要懒加载的元素
+        document.addEventListener('DOMContentLoaded', () => {
+            const lazyElements = document.querySelectorAll('.lazy-load');
+            lazyElements.forEach(el => observer.observe(el));
+        });
+
+        // 导航栏滚动效果
+        let lastScrollTop = 0;
+        const header = document.getElementById('header');
+        const scrollIndicator = document.getElementById('scrollIndicator');
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // 导航栏样式变化
+            if (scrollTop > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+
+            // 滚动进度指示器
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            scrollIndicator.style.width = scrolled + '%';
+
+            lastScrollTop = scrollTop;
+        });
+
+        // 平滑滚动导航
+        document.querySelectorAll('.nav-menu a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offsetTop = target.offsetTop - 120; // 考虑固定导航栏高度
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // 导航栏激活状态
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop && window.pageYOffset < sectionTop + sectionHeight) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // 返回顶部按钮
+        const backToTopBtn = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // 动态日期
+        function updateDate() {
+            const now = new Date();
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric', 
+                weekday: 'long' 
+            };
+            const dateString = now.toLocaleDateString('zh-CN', options);
+            document.getElementById('currentDate').textContent = dateString;
+        }
+
+        // 卡片悬停效果增强
+        document.querySelectorAll('.stat-card, .category-card, .token-card, .channel-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // 数字滚动动画
+        function animateNumbers() {
+            const numbers = document.querySelectorAll('.stat-number');
+            
+            numbers.forEach(numberEl => {
+                const target = parseFloat(numberEl.textContent);
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+                
+                const timer = setInterval(() => {
+                    current += step;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    
+                    // 格式化数字显示
+                    if (numberEl.textContent.includes('亿')) {
+                        numberEl.innerHTML = current.toFixed(1) + '<span style="font-size: 1.5rem;">亿</span>';
+                    } else if (numberEl.textContent.includes('%')) {
+                        numberEl.innerHTML = current.toFixed(1) + '<span style="font-size: 1.5rem;">%</span>';
+                    } else if (numberEl.textContent.includes('人')) {
+                        numberEl.innerHTML = Math.floor(current).toLocaleString() + '<span style="font-size: 1.5rem;">人</span>';
+                    } else if (numberEl.textContent.includes('家')) {
+                        numberEl.innerHTML = Math.floor(current).toLocaleString() + '<span style="font-size: 1.5rem;">家</span>';
+                    } else if (numberEl.textContent.includes('小时')) {
+                        numberEl.innerHTML = Math.floor(current) + '<span style="font-size: 1.5rem;">小时</span>';
+                    } else if (numberEl.textContent.includes('个')) {
+                        numberEl.innerHTML = Math.floor(current).toLocaleString() + '<span style="font-size: 1.5rem;">个</span>';
+                    }
+                }, 16);
+            });
+        }
+
+        // 当数字区域进入视窗时触发动画
+        const numberObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    setTimeout(animateNumbers, 500);
+                    numberObserver.unobserve(entry.target);
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const overviewSection = document.getElementById('overview');
+            if (overviewSection) {
+                numberObserver.observe(overviewSection);
+            }
+            updateDate();
+        });
+
+        // 添加页面加载完成后的初始化
+        window.addEventListener('load', () => {
+            // 预加载关键图片或资源
+            const criticalResources = [
+                // 可以在这里添加需要预加载的图片URL
+            ];
+            
+            criticalResources.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
+        });
+    </script>
+</body>
+</html>
